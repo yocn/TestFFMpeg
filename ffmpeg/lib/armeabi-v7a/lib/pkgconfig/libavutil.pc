@@ -1,0 +1,14 @@
+prefix=/Users/yocn/AndroidStudioProjects/TestFFMpeg/ffmpeg/ffmpeg-3.4.1/../lib/armeabi-v7a
+exec_prefix=${prefix}
+libdir=/Users/yocn/AndroidStudioProjects/TestFFMpeg/ffmpeg/ffmpeg-3.4.1/../lib/armeabi-v7a/lib
+includedir=/Users/yocn/AndroidStudioProjects/TestFFMpeg/ffmpeg/ffmpeg-3.4.1/../lib/armeabi-v7a/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 55.78.100
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil -lm
+Libs.private: 
+Cflags: -I${includedir}
