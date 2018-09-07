@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.yocn.ffmpeg.ffmpeg.testFFMpeg;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
@@ -22,6 +24,17 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(testFFMpeg.getVersion());
 
+        String cmd = "ffmpeg -version";
+        ArrayList<String> cmds = new ArrayList<>();
+
+        String[] ss = cmd.split(" ");
+        for (String s : ss) {
+            cmds.add(s);
+        }
+
+        int re = testFFMpeg.execCmd(cmds.toArray(new String[0]));
+
+        tv.setText(re + "");
 //        testFFMpeg.test();
     }
 

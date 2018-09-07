@@ -13,4 +13,6 @@ public class testFFMpeg {
 
     public static native String getVersion();
 
+    public static native int execCmd(String[] cmd);
+
 }
