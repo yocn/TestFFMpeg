@@ -68,6 +68,8 @@ JavaVM *g_VM;
 jobject g_obj;
 int argc;
 
+jobjectArray g_commands;
+
 void exeffMpegCMD(void *p) {
     JNIEnv *env;
     int mNeedDetach = JNI_FALSE;
@@ -95,6 +97,15 @@ void exeffMpegCMD(void *p) {
     jint callRet = (*env)->CallIntMethod(env, testFFMpegJObject, onProgressMethod, s, 1, 1);
 
     av_log_set_callback(ffp_log_callback_report);
+
+//    int argc = (*env)->GetArrayLength(env, g_commands);
+//    char *argv[argc];
+//    int i;
+//    for (i = 0; i < argc; i++) {
+//        jstring js = (jstring) (*env)->GetObjectArrayElement(env, g_commands, i);
+//        argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
+//        LOGE("%c : %i", argv[i], i);
+//    }
 //    int ret = ffmpeg_exec(argc, argv);
 
     //释放当前线程
@@ -104,28 +115,24 @@ void exeffMpegCMD(void *p) {
     env = NULL;
 }
 
-jobjectArray g_commands;
 
 JNIEXPORT jint JNICALL
 Java_com_yocn_ffmpeg_ffmpeg_testFFMpeg_execCmdWithCallbackInBgThread(JNIEnv *env, jclass clazz,
                                                                      jobjectArray commands) {
 
+    jobjectArray array = (*env)->NewGlobalRef(env, commands);
+    g_commands = array;
+
+//    g_commands = (jobjectArray) (*env)->GetObjectArrayElement(env, ob1, argc - 1);
+//    static jobjectArray g_commands = (jobjectArray) (*env)->NewObjectArray(env, argc, clas, NULL);
 
     int argc = (*env)->GetArrayLength(env, commands);
-    LOGE("aaaaaaaa %i", argc);
-//    jclass cls = (*env)->FindClass(env, "java/lang/Object");
-    jobject obj = (*env)->GetObjectArrayElement(env, commands, 1);
-    jclass clas = (*env)->GetObjectClass(env, obj);
-
-    g_commands = (jobjectArray) (*env)->NewObjectArray(env, argc, clas, NULL);
-
-//    g_commands = commands;
     char *argv[argc];
     int i;
     for (i = 0; i < argc; i++) {
         jstring js = (jstring) (*env)->GetObjectArrayElement(env, commands, i);
         argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
-        LOGE("%c", argv[i]);
+        LOGE("%c : %i", argv[i], i);
     }
 
     /**
