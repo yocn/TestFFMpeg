@@ -67,8 +67,8 @@ Java_com_yocn_ffmpeg_ffmpeg_testFFMpeg_execCmdWithCallback1(JNIEnv *env, jclass 
 JavaVM *g_VM;
 jobject g_obj;
 int argc;
-
 jobjectArray g_commands;
+
 
 void exeffMpegCMD(void *p) {
     JNIEnv *env;
@@ -94,19 +94,20 @@ void exeffMpegCMD(void *p) {
     jobject testFFMpegJObject = (*env)->NewObject(env, clazz, initId);
     //这里注意调用需要的参数是JString，需要jstring而不是C里面的string
     jstring s = (*env)->NewStringUTF(env, "TAG");
-    jint callRet = (*env)->CallIntMethod(env, testFFMpegJObject, onProgressMethod, s, 1, 1);
 
     av_log_set_callback(ffp_log_callback_report);
 
-//    int argc = (*env)->GetArrayLength(env, g_commands);
-//    char *argv[argc];
-//    int i;
-//    for (i = 0; i < argc; i++) {
-//        jstring js = (jstring) (*env)->GetObjectArrayElement(env, g_commands, i);
-//        argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
-//        LOGE("%c : %i", argv[i], i);
-//    }
-//    int ret = ffmpeg_exec(argc, argv);
+    int argc = (*env)->GetArrayLength(env, g_commands);
+    char *argv[argc];
+    int i;
+    for (i = 0; i < argc; i++) {
+        jstring js = (jstring) (*env)->GetObjectArrayElement(env, g_commands, i);
+        argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
+        LOGE("%c : %i", argv[i], i);
+    }
+    int ret = ffmpeg_exec(argc, argv);
+
+    jint resultRet = (*env)->CallIntMethod(env, testFFMpegJObject, onProgressMethod, s, 1, 1);
 
     //释放当前线程
     if (mNeedDetach) {
@@ -120,19 +121,22 @@ JNIEXPORT jint JNICALL
 Java_com_yocn_ffmpeg_ffmpeg_testFFMpeg_execCmdWithCallbackInBgThread(JNIEnv *env, jclass clazz,
                                                                      jobjectArray commands) {
 
-    jobjectArray array = (*env)->NewGlobalRef(env, commands);
-    g_commands = array;
+//    int argc = (*env)->GetArrayLength(env, commands);
+    g_commands = (*env)->NewGlobalRef(env, commands);
+//    g_commands = NewGlobalRef(commands);
+//    jobjectArray array = (*env)->NewGlobalRef(env, commands);
 
 //    g_commands = (jobjectArray) (*env)->GetObjectArrayElement(env, ob1, argc - 1);
-//    static jobjectArray g_commands = (jobjectArray) (*env)->NewObjectArray(env, argc, clas, NULL);
 
-    int argc = (*env)->GetArrayLength(env, commands);
+//    jclass cls = (*env)->NewObjectArray(env, argc, clazz, NULL);
+//    jobjectArray arr = (jobjectArray) (*env)->NewObjectArray(env, argc, cls, NULL);
+
     char *argv[argc];
     int i;
     for (i = 0; i < argc; i++) {
         jstring js = (jstring) (*env)->GetObjectArrayElement(env, commands, i);
         argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
-        LOGE("%c : %i", argv[i], i);
+//        LOGE("%c : %i", argv[i], i);
     }
 
     /**
@@ -154,7 +158,9 @@ Java_com_yocn_ffmpeg_ffmpeg_testFFMpeg_execCmdWithCallbackInBgThread(JNIEnv *env
     g_obj = (*env)->NewGlobalRef(env, testFFMpegJObject);
 
     pthread_t thread;
-    pthread_create(thread, NULL, exeffMpegCMD, NULL);
+
+//    pthread_create(thread, NULL, exeffMpegCMD, NULL);
+    pthread_create(&thread, NULL, exeffMpegCMD, NULL);
 
     return 1;
 }

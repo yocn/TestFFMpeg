@@ -6,6 +6,9 @@ package com.yocn.ffmpeg.ffmpeg;
  * @ClassName testFFMpeg
  */
 public class testFFMpeg {
+
+    static OnProgressInterface mProgressInterface;
+
     static {
         System.loadLibrary("ffmpeg");
         System.loadLibrary("helloffmpeg");
@@ -23,8 +26,13 @@ public class testFFMpeg {
         return Hodler.instance;
     }
 
+    public static void setProgressInterface(OnProgressInterface mProgressInterface) {
+        testFFMpeg.mProgressInterface = mProgressInterface;
+    }
+
     public int onProgress(String TAG, long total, long current) {
         LogUtil.d(TAG + " ------------- " + total + " ----------------- " + current);
+        testFFMpeg.mProgressInterface.onProgress("gif", 100);
         return 0;
     }
 
@@ -39,7 +47,6 @@ public class testFFMpeg {
 
     //执行命令行 回调
     public static native int execCmdWithCallbackInBgThread(String[] cmd);
-
 
 
 }
