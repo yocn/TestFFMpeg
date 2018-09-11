@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.yocn.ffmpeg.ffmpeg.LogUtil;
@@ -17,11 +18,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity implements View.OnClickListener {
     TextView mShowTv;
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+    ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +28,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     public void initView() {
+
+        mProgressBar = findViewById(R.id.pb_progress);
+
         mShowTv = findViewById(R.id.sample_text);
         mShowTv.setText(testFFMpeg.getVersion());
         Button bt_do = findViewById(R.id.tv_do);
         bt_do.setOnClickListener(this);
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
 
     @Override
     public void onClick(View view) {
@@ -58,7 +52,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     cmds.add(s);
                 }
 
-                
+                mProgressBar.setVisibility(View.VISIBLE);
+
                 testFFMpeg.setProgressInterface(new OnProgressInterface() {
                     @Override
                     public void onProgress(String id, int progress) {
@@ -67,6 +62,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             @Override
                             public void run() {
                                 mShowTv.setText("Done!");
+                                mProgressBar.setVisibility(View.GONE);
                             }
                         });
                     }
