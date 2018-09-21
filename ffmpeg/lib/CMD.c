@@ -103,7 +103,7 @@ void exeffMpegCMD(void *p) {
     for (i = 0; i < argc; i++) {
         jstring js = (jstring) (*env)->GetObjectArrayElement(env, g_commands, i);
         argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
-        LOGE("%c : %i", argv[i], i);
+//        LOGE("%c : %i", argv[i], i);
     }
     int ret = ffmpeg_exec(argc, argv);
 

@@ -25,6 +25,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        String s = testFFMpeg.getVersion();
+        LogUtil.d("yocn s->" + s);
     }
 
     public void initView() {
@@ -32,7 +34,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mProgressBar = findViewById(R.id.pb_progress);
 
         mShowTv = findViewById(R.id.sample_text);
-        mShowTv.setText(testFFMpeg.getVersion());
         Button bt_do = findViewById(R.id.tv_do);
         bt_do.setOnClickListener(this);
     }

@@ -10,7 +10,7 @@ public class testFFMpeg {
     static OnProgressInterface mProgressInterface;
 
     static {
-        System.loadLibrary("ffmpeg");
+//        System.loadLibrary("ffmpeg");
         System.loadLibrary("helloffmpeg");
     }
 
